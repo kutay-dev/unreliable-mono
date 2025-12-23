@@ -1,0 +1,72 @@
+services:
+  auth:
+    build:
+      context: .
+      dockerfile: apps/auth/Dockerfile
+      target: development
+    volumes:
+      - ./apps/auth:/usr/src/app/apps/auth
+      - ./libs:/usr/src/app/libs
+    environment:
+      - NODE_ENV=dev
+      - PORT=3000
+    expose:
+      - "3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/auth
+          target: /usr/src/app/apps/auth
+        - action: sync
+          path: ./libs
+          target: /usr/src/app/libs
+        - action: rebuild
+          path: package.json
+
+  chat:
+    build:
+      context: .
+      dockerfile: apps/chat/Dockerfile
+      target: development
+    volumes:
+      - ./apps/chat:/usr/src/app/apps/chat
+      - ./libs:/usr/src/app/libs
+    environment:
+      - NODE_ENV=dev
+      - PORT=3000
+    expose:
+      - "3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/chat
+          target: /usr/src/app/apps/chat
+        - action: sync
+          path: ./libs
+          target: /usr/src/app/libs
+        - action: rebuild
+          path: package.json
+
+  gateway:
+    build:
+      context: .
+      dockerfile: apps/gateway/Dockerfile
+      target: development
+    volumes:
+      - ./apps/gateway:/usr/src/app/apps/gateway
+      - ./libs:/usr/src/app/libs
+    environment:
+      - NODE_ENV=dev
+      - PORT=3000
+    ports:
+      - "3000:3000"
+    develop:
+      watch:
+        - action: sync
+          path: ./apps/gateway
+          target: /usr/src/app/apps/gateway
+        - action: sync
+          path: ./libs
+          target: /usr/src/app/libs
+        - action: rebuild
+          path: package.json

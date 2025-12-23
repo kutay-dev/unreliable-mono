@@ -1,10 +1,17 @@
 import { Module } from '@nestjs/common';
 import { ChatController } from './chat.controller';
 import { ChatService } from './chat.service';
-import { RedisModule } from '@app/core';
+import { ConfigModule } from '@nestjs/config';
+import { LoggerModule, RedisModule } from '@app/core';
 
 @Module({
-  imports: [RedisModule],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
+    LoggerModule,
+    RedisModule,
+  ],
   controllers: [ChatController],
   providers: [ChatService],
 })

@@ -2,64 +2,38 @@ services:
   auth:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: pnpm nest start auth --watch
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      dockerfile: apps/auth/Dockerfile
+      target: production
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=prod
       - PORT=3000
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /usr/src/app
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: package.json
+    expose:
+      - "3000"
+    restart: unless-stopped
 
   chat:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: pnpm nest start chat --watch
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      dockerfile: apps/chat/Dockerfile
+      target: production
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=prod
       - PORT=3000
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /usr/src/app
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: package.json
+    expose:
+      - "3000"
+    restart: unless-stopped
 
   gateway:
     build:
       context: .
-      dockerfile: Dockerfile
-    command: pnpm nest start gateway --watch
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
+      dockerfile: apps/gateway/Dockerfile
+      target: production
     environment:
-      - NODE_ENV=development
+      - NODE_ENV=prod
       - PORT=3000
     ports:
-      - '3000:3000'
-    develop:
-      watch:
-        - action: sync
-          path: .
-          target: /usr/src/app
-          ignore:
-            - node_modules/
-        - action: rebuild
-          path: package.json
+      - "3000:3000"
+    depends_on:
+      - auth
+      - chat
+    restart: unless-stopped
